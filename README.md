@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Image Generator
+
+A single-page web app that uploads two images to an n8n webhook and displays the AI-generated result.
+
+**Example use case:** Upload a photo of a person and a clothing item — the AI returns a new image of the person wearing that clothing.
+
+---
+
+## Stack
+
+- [Next.js 16](https://nextjs.org) (App Router, TypeScript)
+- [Tailwind CSS v4](https://tailwindcss.com)
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure environment
+
+```bash
+cp .env.example .env.local
+```
+
+Open `.env.local` and set your webhook URL:
+
+```
+WEBHOOK_URL=https://your-n8n-instance/webhook/your-id
+```
+
+### 3. Run the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## How It Works
 
-## Learn More
+1. User uploads two images (JPG, PNG, or WebP — max 10 MB each)
+2. Browser posts them to the local `/api/generate` route
+3. The server proxies the request to the n8n webhook as `multipart/form-data` with fields `image1` and `image2`
+4. The webhook returns a binary image
+5. The app displays it with a download link
 
-To learn more about Next.js, take a look at the following resources:
+The webhook URL is stored server-side only — it is never exposed to the browser.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+app/
+  page.tsx          # Single-page UI (upload, generate, output)
+  layout.tsx        # Root layout and metadata
+  globals.css       # Global styles + Tailwind import
+  api/
+    generate/
+      route.ts      # Server-side proxy to the n8n webhook
+.env.local          # Secret env vars (gitignored)
+.env.example        # Template for required env vars
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+Set `WEBHOOK_URL` as an environment variable on your hosting platform (e.g. Vercel). Do not commit `.env.local`.
+
+```bash
+npm run build
+```
