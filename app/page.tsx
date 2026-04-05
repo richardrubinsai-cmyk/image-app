@@ -2,7 +2,7 @@
 
 import { useRef, useState, useCallback, DragEvent, ChangeEvent } from "react";
 
-const API_URL = "/api/generate";
+const WEBHOOK_URL = process.env.NEXT_PUBLIC_WEBHOOK_URL ?? "";
 
 const ACCEPTED_TYPES = ["image/jpeg", "image/jpg", "image/webp", "image/png"];
 const MAX_SIZE_BYTES = 10 * 1024 * 1024;
@@ -190,6 +190,7 @@ export default function Home() {
 
   const handleGenerate = async () => {
     if (!image1 || !image2) return;
+    if (!WEBHOOK_URL) { setErrorMsg("Webhook URL is not configured"); setStatus("error"); return; }
     if (prevOutputUrl.current) { URL.revokeObjectURL(prevOutputUrl.current); prevOutputUrl.current = null; }
     setOutputUrl(null);
     setErrorMsg("");
@@ -200,12 +201,9 @@ export default function Home() {
       formData.append("image1", image1.file);
       formData.append("image2", image2.file);
 
-      const response = await fetch(API_URL, { method: "POST", body: formData });
+      const response = await fetch(WEBHOOK_URL, { method: "POST", body: formData });
 
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error ?? `Request failed (${response.status})`);
-      }
+      if (!response.ok) throw new Error(`Request failed (${response.status})`);
 
       const blob = await response.blob();
       if (blob.size === 0) throw new Error("Received an empty response");
