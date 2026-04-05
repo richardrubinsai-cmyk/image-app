@@ -2,7 +2,7 @@
 
 import { useRef, useState, useCallback, DragEvent, ChangeEvent } from "react";
 
-const WEBHOOK_URL = process.env.NEXT_PUBLIC_WEBHOOK_URL ?? "";
+const WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL ?? "";
 
 const ACCEPTED_TYPES = ["image/jpeg", "image/jpg", "image/webp", "image/png"];
 const MAX_SIZE_BYTES = 10 * 1024 * 1024;
