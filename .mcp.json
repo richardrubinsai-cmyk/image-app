@@ -1,8 +1,16 @@
 {
   "mcpServers": {
+    "playwright": {
+      "command": "node",
+      "args": ["node_modules/@playwright/mcp/cli.js"]
+    },
     "supabase": {
       "type": "http",
       "url": "https://mcp.supabase.com/mcp?project_ref=zghpnremzcnausztnoju"
+    },
+    "stripe": {
+      "type": "http",
+      "url": "https://mcp.stripe.com/"
     }
   }
 }

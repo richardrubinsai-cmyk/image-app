@@ -1,0 +1,27 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]: AI Image Generator
+        - heading "Create an account" [level=1] [ref=e7]
+        - paragraph [ref=e8]: Start generating images today
+      - generic [ref=e9]:
+        - generic [ref=e10]:
+          - generic [ref=e11]: Name
+          - textbox "Your name" [ref=e12]: Test User
+        - generic [ref=e13]:
+          - generic [ref=e14]: Email
+          - textbox "you@example.com" [ref=e15]: testpayment+001@example.com
+        - generic [ref=e16]:
+          - generic [ref=e17]: Password
+          - textbox "••••••••" [ref=e18]: testpass123
+          - generic [ref=e19]: At least 6 characters
+        - paragraph [ref=e33]: Email address "testpayment+001@example.com" is invalid
+        - button "Create account" [ref=e20] [cursor=pointer]
+        - paragraph [ref=e21]:
+          - text: Already have an account?
+          - link "Sign in" [ref=e22] [cursor=pointer]:
+            - /url: /login
+  - button "Open Next.js Dev Tools" [ref=e28] [cursor=pointer]:
+    - img [ref=e29]
+  - alert [ref=e32]

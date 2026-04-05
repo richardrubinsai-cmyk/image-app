@@ -1,0 +1,27 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e24] [cursor=pointer]:
+    - img [ref=e25]
+  - alert [ref=e28]
+  - main [ref=e29]:
+    - generic [ref=e30]:
+      - generic [ref=e31]: Monthly subscription
+      - heading "Unlock AI Image Generator" [level=1] [ref=e33]
+      - paragraph [ref=e34]: Cancel anytime. Billed monthly.
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - generic [ref=e37]: $9.99
+          - generic [ref=e38]: / month
+        - list [ref=e39]:
+          - listitem [ref=e40]:
+            - generic [ref=e41]: ✓
+            - text: Unlimited image generations
+          - listitem [ref=e42]:
+            - generic [ref=e43]: ✓
+            - text: AI-powered blending
+          - listitem [ref=e44]:
+            - generic [ref=e45]: ✓
+            - text: Download your results
+          - listitem [ref=e46]:
+            - generic [ref=e47]: ✓
+            - text: Cancel anytime
+        - button "Subscribe — $9.99 / month" [ref=e48] [cursor=pointer]
