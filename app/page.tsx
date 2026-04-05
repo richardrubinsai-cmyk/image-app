@@ -2,8 +2,7 @@
 
 import { useRef, useState, useCallback, DragEvent, ChangeEvent } from "react";
 
-const WEBHOOK_URL =
-  "http://n8n-zu7ex2gs3nua7w367zs13bbn.35.202.6.60.sslip.io/webhook/0e47b6a7-f92d-4873-bb2d-0cbed246b30c";
+const API_URL = "/api/generate";
 
 const ACCEPTED_TYPES = ["image/jpeg", "image/jpg", "image/webp", "image/png"];
 const MAX_SIZE_BYTES = 10 * 1024 * 1024;
@@ -201,17 +200,15 @@ export default function Home() {
       formData.append("image1", image1.file);
       formData.append("image2", image2.file);
 
-      const response = await fetch(WEBHOOK_URL, { method: "POST", body: formData });
+      const response = await fetch(API_URL, { method: "POST", body: formData });
 
-      console.log("Webhook status:", response.status);
-      console.log("Webhook content-type:", response.headers.get("content-type"));
-
-      if (!response.ok) throw new Error(`Request failed (${response.status})`);
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error ?? `Request failed (${response.status})`);
+      }
 
       const blob = await response.blob();
-      console.log("Blob size:", blob.size, "type:", blob.type);
-
-      if (blob.size === 0) throw new Error(`Webhook returned an empty response (status ${response.status}). Check browser DevTools → Network tab for details.`);
+      if (blob.size === 0) throw new Error("Received an empty response");
 
       const url = URL.createObjectURL(blob);
       prevOutputUrl.current = url;
