@@ -1,6 +1,8 @@
 "use client";
 
-import { useRef, useState, useCallback, DragEvent, ChangeEvent } from "react";
+import { useRef, useState, useCallback, useEffect, DragEvent, ChangeEvent } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 const WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL ?? "";
 
@@ -166,12 +168,27 @@ function Spinner() {
 }
 
 export default function Home() {
+  const router = useRouter();
+  const [userName, setUserName] = useState<string | null>(null);
   const [image1, setImage1] = useState<ImageSlot | null>(null);
   const [image2, setImage2] = useState<ImageSlot | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
   const prevOutputUrl = useRef<string | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) setUserName(user.user_metadata?.full_name ?? user.email ?? null);
+    });
+  }, []);
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
 
   const handleFile = (setter: (s: ImageSlot | null) => void) => (file: File) => {
     setter({ file, preview: URL.createObjectURL(file) });
@@ -223,6 +240,32 @@ export default function Home() {
       minHeight: "100vh", display: "flex", flexDirection: "column",
       alignItems: "center", padding: "52px 16px 80px", background: "#080810",
     }}>
+      {/* ── User bar ── */}
+      {userName && (
+        <div style={{
+          position: "fixed", top: 16, right: 16,
+          display: "flex", alignItems: "center", gap: 10,
+          padding: "6px 6px 6px 14px", borderRadius: 999,
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.08)",
+        }}>
+          <span style={{ fontSize: "0.8rem", color: "rgba(160,160,210,0.7)" }}>
+            {userName}
+          </span>
+          <button
+            onClick={handleLogout}
+            style={{
+              padding: "5px 12px", borderRadius: 999, border: "none",
+              background: "rgba(139,92,246,0.15)", color: "rgba(167,139,250,0.8)",
+              fontSize: "0.75rem", fontWeight: 600, cursor: "pointer",
+              letterSpacing: "0.04em",
+            }}
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+
       {/* ── Header ── */}
       <header style={{ textAlign: "center", marginBottom: "44px" }}>
         <div style={{
