@@ -179,10 +179,20 @@ export default function Home() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) setUserName(user.user_metadata?.full_name ?? user.email ?? null);
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return;
+      setUserName(user.user_metadata?.full_name ?? user.email ?? null);
+
+      const { data: subscription } = await supabase
+        .from("subscriptions")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("status", "active")
+        .maybeSingle();
+
+      if (!subscription) router.push("/payment");
     });
-  }, []);
+  }, [router]);
 
   const handleLogout = async () => {
     const supabase = createClient();
